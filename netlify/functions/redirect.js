@@ -11,9 +11,22 @@ const redis = new Redis({
 
 exports.handler = async (event, context) => {
     const pathName = event.path.replace(/^\/|\/$/g, ''); // Remove leading/trailing slashes
+
+    // Resolve path relative to where the function is bundled
+    // In Netlify functions, included files are usually at the root of the lambda or relative to it.
+    // We try a few common locations if the first one fails, or just log for debugging.
     const linksFilePath = path.resolve(__dirname, '../../links.txt');
+    console.log(`[Debug] __dirname: ${__dirname}`);
+    console.log(`[Debug] Resolved linksFilePath: ${linksFilePath}`);
 
     try {
+        if (!fs.existsSync(linksFilePath)) {
+            console.error(`[Error] File not found at: ${linksFilePath}`);
+            // Fallback attempt: sometimes files are flat in the directory
+            // const flatPath = path.resolve(__dirname, 'links.txt');
+            // console.log(`[Debug] Checking flat path: ${flatPath}`);
+        }
+
         const fileContent = fs.readFileSync(linksFilePath, 'utf8');
         const lines = fileContent.split('\n');
         let targetUrl = null;
