@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortener Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .refresh-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .stats-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.02);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .slug-cell {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .url-cell {
+            color: var(--text-secondary);
+            max-width: 400px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        
+        .visits-cell {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+        }
+
+        .loading, .error {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            color: #f87171;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Link Analytics</h1>
+            <button onclick="fetchStats()" class="refresh-btn">Refresh</button>
+        </header>
+
+        <div class="stats-card">
+            <div id="content">
+                <div class="loading">Loading stats...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchStats() {
+            const content = document.getElementById('content');
+            content.innerHTML = '<div class="loading">Loading stats...</div>';
+
+            try {
+                const response = await fetch('/.netlify/functions/stats');
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                
+                const json = await response.json();
+                
+                if (json.error) throw new Error(json.error);
+                
+                renderTable(json.data);
+            } catch (err) {
+                console.error(err);
+                content.innerHTML = `<div class="error">Error loading stats: ${err.message}</div>`;
+            }
+        }
+
+        function renderTable(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('content').innerHTML = '<div class="loading">No links found or no data available.</div>';
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Slug</th>
+                            <th>Destination</th>
+                            <th style="text-align: right">Visits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.forEach(item => {
+                html += `
+                    <tr>
+                        <td class="slug-cell">/${item.slug}</td>
+                        <td><a href="${item.destination}" target="_blank" class="url-cell">${item.destination}</a></td>
+                        <td class="visits-cell" style="text-align: right">${item.visits}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            document.getElementById('content').innerHTML = html;
+        }
+
+        // Load on start
+        fetchStats();
+    </script>
+</body>
+</html>
