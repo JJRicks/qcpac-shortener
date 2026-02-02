@@ -8,6 +8,7 @@
 /OWNWAY        https://www.etix.com/ticket/p/64004842/fleetwood-macgo-your-own-way-queen-creek-queen-creek-performing-arts-center
 /together      https://www.etix.com/ticket/p/77424550/johnny-and-dollytogether-at-last-queen-creek-queen-creek-performing-arts-center
 /TOGETHER      https://www.etix.com/ticket/p/77424550/johnny-and-dollytogether-at-last-queen-creek-queen-creek-performing-arts-center
+/blonde        https://www.etix.com/ticket/e/1050513/20252026-centerstage-series-queen-creek-queen-creek-performing-arts-center
 /test          https://youtube.com/@jjricks
 
 
