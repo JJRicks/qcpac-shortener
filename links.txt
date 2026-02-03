@@ -10,6 +10,8 @@
 /TOGETHER      https://www.etix.com/ticket/p/77424550/johnny-and-dollytogether-at-last-queen-creek-queen-creek-performing-arts-center
 /blonde        https://www.etix.com/ticket/e/1050513/20252026-centerstage-series-queen-creek-queen-creek-performing-arts-center
 /test          https://youtube.com/@jjricks
+/DIVA          https://www.etix.com/ticket/p/42695421/diva-legendssongs-from-the-greatest-female-singers-of-all-time-queen-creek-queen-creek-performing-arts-center
+/diva          https://www.etix.com/ticket/p/42695421/diva-legendssongs-from-the-greatest-female-singers-of-all-time-queen-creek-queen-creek-performing-arts-center
 
 
 #fallback
